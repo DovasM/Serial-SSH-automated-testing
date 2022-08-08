@@ -7,22 +7,32 @@ from urllib import response
 import serial
 import time
 from curses import ascii   
+import os
 
 
 class ConnectionHandler:
 
     __results = []
+    __configHandler = None
     __termHandler = None
     __device = None
     __sio = None
 
-    def __init__(self, device, port):
-        self.__sio = serial.Serial(port, 115200, timeout=1)
-        # self.__sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
-        self.__device = device
+    def __init__(self, flags, config):
+        if (not(hasattr(flags, "pt"))):
+            raise Exception("Need attributes [Port] for Serial server connection")
+
+        os.system("systemctl stop ModemManager")
+        self.__sio = serial.Serial(flags.pt, 115200, timeout=1)
+        self.__device = flags.name
         self.__termHandler = self.__load_module()
         if not self.__termHandler:
             raise Exception("Unable to load terminal handler module")
+        try:
+            __configHandler = config
+        except Exception as error:
+            print(error)
+        self.test_commands(__configHandler.get_comm(flags.name))
 
     def __load_module(self):
         module = None
@@ -32,7 +42,7 @@ class ConnectionHandler:
         except:
             return False        
 
-    def exec_commands(self, arg):
+    def test_commands(self, arg):
         for command in arg:
                 result = {}
                 comm = command['command'] + '\r'
@@ -42,9 +52,7 @@ class ConnectionHandler:
                 result["command"] = command["command"]
                 result["expects"] = command["expects"]
                 result["status"] = response[0]
-
                 result["response"] = response[1]
-
                 result["device"] = self.__device
                 result["connection"] = "Serial"
                 result["count"] = len(arg)
@@ -52,19 +60,22 @@ class ConnectionHandler:
                 self.__results.append(result)
 
     def test_comm(self, command, argument):
-
-        self.__sio.write(bytes(command))
-        self.__sio.write(bytes(argument))
+        
+        self.__sio.write(bytes(command, 'utf8'))
+        self.__sio.write(b'\r')
+        self.__sio.write(bytes(argument, 'utf8'))
         self.__sio.write(b'\x1A\r')
         
         
         answer = None
-        self.__sio.flush() # it is buffering. required to get the data out *now*
+        # self.__sio.flush() # it is buffering. required to get the data out *now*
 
             
         at_value = self.__sio.readlines()
-        dec_at_value = at_value.decode()
-        respons = dec_at_value[-1].strip(".\n")
+
+        dec_at_value = at_value[-1].decode('utf-8')
+        respons = dec_at_value.strip(".\r\n")
+        
         answer, respons = self.wait_until(respons,90,2)
         
         if answer:
@@ -89,12 +100,17 @@ class ConnectionHandler:
         mustend = time.time() + timeout
         while time.time() < mustend:
           if kfind == 'OK' or kfind == 'FAIL': return True, kfind
+          
           at_value = self.__sio.readlines()
-          dec_at_value = at_value
-          print(at_value)
+        #   print(at_value)
           if at_value == []:
             continue
-          kfind = dec_at_value[-1].strip(".\n")
+
+          dec_at_value = at_value[-1].decode('utf-8')
+          
+          
+          kfind = dec_at_value.strip(".\r\n")
+          
           time.sleep(period)
         return False, 'Error'
     
@@ -114,7 +130,7 @@ class ConnectionHandler:
     
             # at_value = self.__sio.readlines()
             # respons = at_value[-1].strip(".\n")
-            print(0)
+
         except Exception as error:
             raise Exception (error)
 

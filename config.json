@@ -4,13 +4,35 @@
            "device":"RUTX11",
            "connection":"ssh",
            "commands":[
+                {
+                "command":"ATE1",
+                "expects":"OK",
+                "argument":""
+                },
                {
                    "command":"ATI",
-                   "expects":"OK"
+                   "expects":"OK",
+                   "argument":""
                },
                {
                    "command":"AT+COPS",
-                   "expects":"FAIL"
+                   "expects":"FAIL",
+                   "argument":""
+               },
+               {
+                   "command":"AT+CMGF=1",
+                   "expects":"FAIL",
+                   "argument":""
+               },
+               {
+                "command":"AT+CSCS=\"GSM\"",
+                "expects":"OK",
+                "argument":""
+                },
+               {
+                   "command":"AT+CMGS=\"+37065841107\"",
+                   "expects":"OK",
+                   "argument":"TEKST"
                }
            ]
        },
@@ -30,7 +52,7 @@
                },
                {
                    "command":"AT+CMGF=1",
-                   "expects":"OK",
+                   "expects":"FAIL",
                    "argument":""
                },
                {
@@ -42,11 +64,29 @@
                    "command":"AT+CMGS=\"+37065841107\"",
                    "expects":"OK",
                    "argument":"TEKST"
+               },
+               {
+                   "command":"AT+COPS",
+                   "expects":"OK",
+                   "argument":""
+               },
+               {
+                   "command":"AT+COPS=?",
+                   "expects":"OK",
+                   "argument":""
+               },
+               {
+                   "command":"AT+COPS",
+                   "expects":"OK",
+                   "argument":""
                }
                
            ]
        }
    ],
+   "address":"192.168.1.1",
+   "username":"root",
+   "pasword":"Admin123",
    "results":{
     "save_as":"csv",
     "path":""

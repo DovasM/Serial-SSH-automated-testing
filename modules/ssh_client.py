@@ -1,3 +1,4 @@
+from imp import load_module
 import paramiko
 import time
 
@@ -6,18 +7,35 @@ class ConnectionHandler:
 
     __ssh_client = None
     __ssh_channel = None
+    __testHandler = None
+    __flags = None
+    
 
-    def __init__(self, flags):
 
-        if not flags.ip and not flags.username and not flags.password:
-            raise Exception("fuhas esi")
+    def __init__(self, flags, config):
+        
+        if (not(hasattr(flags, "ip") and
+            hasattr(flags, "username") and
+            hasattr(flags, "password"))):
+            raise Exception("Need attributes [IP, Username, Password] for SSH server connection")
 
-        print(flags)
         
 
-        # if not self.__open_connection(addr, username, password):
-        #     raise Exception("Unable to connect to SSH server")
+        if not self.__open_connection(flags.ip, flags.username, flags.password):
+            raise Exception("Unable to connect to SSH server")
+
+        self.__flags = flags
+
+        self.__testHandler = self.load_module()
+        self.__testHandler.test_commands(config.get_comm(self.__flags.name))
         
+    def load_module(self):
+        module = None
+        try:
+            module = __import__('modules.test_handler', fromlist=['modules'])
+            return module.TestHandler(self, self.__flags.name)
+        except:
+            return False 
 
     def __close_connection(self):
         if self.__ssh_client:
@@ -64,6 +82,8 @@ class ConnectionHandler:
                 return output
         except Exception as error:
             print(error)
+
+
 
     def wait_until(self, output, timeout, period=0.25):
         mustend = time.time() + timeout
