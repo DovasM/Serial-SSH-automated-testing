@@ -28,12 +28,7 @@
                 "command":"AT+CSCS=\"GSM\"",
                 "expects":"OK",
                 "argument":""
-                },
-               {
-                   "command":"AT+CMGS=\"+37065841107\"",
-                   "expects":"OK",
-                   "argument":"TEKST"
-               }
+                }
            ]
        },
        {
@@ -90,5 +85,10 @@
    "results":{
     "save_as":"csv",
     "path":""
- }
+ },
+    "ftp_connection":{
+        "address":"localhost",
+        "username":"studentas",
+        "password":"studentas"
+    }
 }

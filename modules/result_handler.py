@@ -5,7 +5,6 @@ class ResultHandler:
 
     def __init__(self, type):
         self.__resultSaver = self.__load_module(type)
-        # print(self.__resultSaver)
         if not self.__resultSaver:
             raise Exception("Unable to load result handler module")
 
@@ -25,3 +24,6 @@ class ResultHandler:
 
     def save_results(self, results):
         self.__resultSaver.save_results(results)
+
+    def saved_file_info(self):
+        return self.__resultSaver.saved_file_info()
