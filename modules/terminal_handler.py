@@ -23,6 +23,7 @@ class TerminalHandler:
         parser.add_argument("-p", "--password",dest = "password", help="Password", default=argparse.SUPPRESS)
         parser.add_argument("-b", "--baudrate",dest = "baudrate", help="Serial baudrate", type=int, default=argparse.SUPPRESS)
         parser.add_argument("-i", "--ip",dest = "ip", help="IP address", default=argparse.SUPPRESS)
+        parser.add_argument("-ftp", "--ftp",dest = "ftp", help="Save FTP Y/N", default=argparse.SUPPRESS)
 
         args = parser.parse_args()
 
