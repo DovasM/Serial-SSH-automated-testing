@@ -5,7 +5,7 @@
 Iot testing program writen in python 3.9.5.
 
 The goal of the project is to have the means to connect the IoT device using SSH or Serial connection
-and using setuped AT commands test the device. 
+and using setuped AT commands to test the device. 
 
 ## Usage
 0. Download this package with `go get` or `git clone`
