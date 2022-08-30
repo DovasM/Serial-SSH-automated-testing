@@ -10,9 +10,9 @@ and using setuped AT commands to test the device.
 ## Usage
 0. Download this package with `go get` or `git clone`
 ```
-   go get -u github.com/goiiot/libserial
+   go get -u github.com/DovasM/Serial-SSH-automated-testing
 	 
-	 git clone https://github.com/goiiot/libserial
+	 git clone https://github.com/DovasM/Serial-SSH-automated-testing
 ```
 1. In config.json set your device and command settings to test
 
